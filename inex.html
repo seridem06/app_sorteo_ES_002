@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteo Final - Ajuste Perfecto</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        h2 { text-align: center; margin-bottom: 20px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 1px; }
+        .contenedor-maestro { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px; width: 100%; max-width: 1450px; }
+        
+        /* COLUMNAS */
+        .columna-control, .columna-villa, .columna-tabla, .columna-derecha { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; border: 1px solid #e1e4e8; }
+        .columna-control { width: 260px; }
+        .columna-villa { width: 170px; align-items: center; }
+        .columna-tabla { width: 340px; min-height: 600px; }
+        .columna-derecha { width: 400px; }
+        @media (max-width: 1200px) { .columna-control, .columna-villa, .columna-tabla, .columna-derecha { width: 95%; max-width: 500px; margin-bottom: 20px; } }
+
+        /* PANELES */
+        .panel-gris { background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; margin-bottom: 10px; }
+        .panel-config { background-color: #fff; border: 2px dashed #adb5bd; padding: 10px; border-radius: 8px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .panel-multirango { background-color: #e3f2fd; border: 2px solid #2196f3; padding: 12px; border-radius: 8px; margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .titulo-multi { font-size: 14px; font-weight: bold; text-align: center; color: #1565c0; text-transform: uppercase; border-bottom: 2px solid #90caf9; padding-bottom: 8px; margin-bottom: 8px; }
+        .info-demanda { background-color: #bbdefb; color: #0d47a1; padding: 10px; text-align: center; font-weight: bold; border-radius: 6px; font-size: 14px; border: 1px solid #90caf9; margin-bottom: 10px; }
+        
+        /* FILAS Y INPUTS */
+        .fila-rango { display: grid; grid-template-columns: 0.4fr 1fr 1fr 0.8fr 1.2fr; gap: 6px; align-items: center; background: white; padding: 6px; border-radius: 5px; border: 1px solid #bbdefb; }
+        .lbl-fila { font-size: 12px; font-weight: bold; color: #555; text-align: center; }
+        .input-rango { padding: 4px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; text-align: center; width: 100%; box-sizing: border-box; }
+        .input-auto { background-color: #f0f0f0; color: #555; cursor: default; }
+        select.input-rango { text-align-last: center; }
+        .selector-cantidad { width: 100%; padding: 8px; border: 1px solid #2196f3; border-radius: 5px; text-align: center; font-weight: bold; color: #0d47a1; margin-bottom: 10px; background: #fff; cursor: pointer; }
+
+        /* CONTADORES */
+        .panel-contador { background-color: #e8f4fd; border: 1px solid #b6d4fe; padding: 12px; text-align: center; border-radius: 8px; margin-top: 15px; }
+        .numero-contador { font-size: 42px; font-weight: bold; color: #0d6efd; margin-top: 5px; line-height: 1; }
+
+        /* INPUTS GRALES */
+        .label-input { font-size: 13px; font-weight: bold; margin-bottom: 6px; display: block; color: #495057; }
+        .label-small { font-size: 11px; font-weight: bold; color: #666; text-align: center; }
+        .input-config { padding: 5px; border: 1px solid #ccc; text-align: center; width: 100%; border-radius: 4px; font-size: 13px; }
+        #input-limite { width: 100%; padding: 8px; border: 2px solid #0d6efd; text-align: center; margin-bottom: 10px; font-weight: bold; font-size: 18px; border-radius: 5px; color: #0d6efd; }
+        .textarea-lista { width: 100%; height: 140px; box-sizing: border-box; border: 1px solid #ccc; padding: 10px; resize: none; font-family: monospace; font-size: 13px; border-radius: 5px; line-height: 1.4; }
+        .status-text { color: #dc3545; font-weight: bold; text-align: center; margin: 10px 0; font-size: 14px; }
+
+        /* BOTONES */
+        button { cursor: pointer; border-radius: 5px; border: none; font-weight: bold; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-azul { background-color: #0d6efd; color: white; padding: 12px; width: 100%; font-size: 14px; margin-bottom: 8px; }
+        .btn-azul:hover:not(:disabled) { background-color: #0b5ed7; }
+        .btn-azul:disabled { background-color: #a4c5f5; cursor: not-allowed; }
+        .btn-gris-oscuro { background-color: #495057; color: white; padding: 8px; font-size: 12px; width: 100%; }
+        .btn-verde-gen { background-color: #198754; color: white; padding: 12px; font-size: 13px; width: 100%; margin-top: 10px; }
+        .btn-verde-gen:hover { background-color: #157347; }
+        .btn-naranja { background-color: #fd7e14; color: white; padding: 8px; font-size: 12px; width: 100%; margin-top: 5px; }
+        .btn-naranja:hover { background-color: #e36d0d; }
+        .btn-rojo { background-color: #dc3545; color: white; padding: 10px; font-size: 12px; width: 100%; }
+        .btn-rojo:hover { background-color: #bb2d3b; }
+        .btn-whatsapp { background-color: #20c997; color: white; padding: 14px; font-size: 14px; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-whatsapp:hover { background-color: #1aa179; }
+
+        .visor-animacion { border: 3px solid #0d6efd; background-color: #fff; height: 75px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: #198754; width: 100%; border-radius: 8px; margin-top: 5px; }
+        .titulo-lista { font-weight: bold; margin-bottom: 12px; text-align: center; color: #495057; font-size: 16px; border-bottom: 2px solid #dee2e6; padding-bottom: 5px; }
+        #lista-villa { list-style: none; padding: 0; margin: 0; width: 100%; }
+        #lista-villa li { padding: 8px 5px; border-bottom: 1px dashed #dee2e6; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .hora-villa { font-weight: bold; color: #6c757d; font-family: monospace; font-size: 15px; }
+        .num-villa { font-weight: bold; color: #000; font-size: 15px; }
+        
+        .tabla-contenedor { width: 100%; border: 2px solid #333; margin-bottom: 10px; background: #fff; }
+        .header-tabla { text-align: center; font-weight: bold; border-bottom: 2px solid #000; padding: 10px; background: #f8f9fa; border: 2px solid #333; border-bottom: none; position: sticky; top: 0; z-index: 10; font-size: 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        td { border: 1px solid #333; padding: 4px; text-align: center; height: 26px; font-weight: bold; }
+        .txt-azul { color: #0d6efd; font-weight: 800; }
+        .txt-rojo { color: #dc3545; font-weight: 800; }
+        .celda-normal { background-color: #fff; color: #000; font-size: 15px; }
+        .celda-bloqueada { background-color: #198754; color: transparent; }
+        .panel-derecho { justify-content: flex-start; }
+
+        /* REPORTE OCULTO */
+        #hoja-captura-oculta { position: absolute; top: -9999px; left: -9999px; width: 900px; background-color: white; padding: 30px; border: 2px solid #333; font-family: 'Arial', sans-serif; }
+        .reporte-header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
+        .reporte-titulo { font-size: 32px; font-weight: 800; margin: 0 0 15px 0; text-transform: uppercase; color: #000; }
+        .reporte-info-grid { display: flex; justify-content: space-between; background-color: #f1f3f5; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .reporte-dato { font-size: 18px; font-weight: bold; color: #333; }
+        .reporte-cuerpo { display: flex; gap: 30px; align-items: flex-start; }
+        .reporte-col-villa { width: 35%; border: 2px solid #333; }
+        .reporte-subtitulo { background-color: #333; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        #lista-villa-reporte { list-style: none; padding: 0; margin: 0; }
+        #lista-villa-reporte li { padding: 8px 15px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; font-size: 16px; font-weight: bold; }
+        .reporte-col-rutad { width: 65%; }
+        #tabla-rutad-reporte { width: 100%; border-collapse: collapse; }
+        #tabla-rutad-reporte td { border: 1px solid #000; padding: 6px; text-align: center; font-weight: bold; font-size: 16px; }
+        .reporte-footer { margin-top: 30px; border: 3px solid #dc3545; background-color: #fff5f5; padding: 20px; text-align: center; border-radius: 5px; }
+        .texto-multa { color: #dc3545; font-size: 22px; font-weight: 900; text-transform: uppercase; margin: 0; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <h2>Programa de Sorteo (Exactitud Garantizada)</h2>
+
+    <div class="contenedor-maestro">
+
+        <div class="columna-control">
+            <div class="panel-gris">
+                <span class="label-input">CANTIDAD A SORTEAR (VILLA):</span>
+                <input type="number" id="input-limite" value="5" min="1" oninput="calcularTotalUnidades()">
+                <span class="label-input">LISTA DE CÓDIGOS:</span>
+                <textarea id="lista-izq" class="textarea-lista" oninput="calcularTotalUnidades()">E 45
+E 56
+E 33
+E 11
+E 21
+E 60
+E 70
+E 80
+E 90
+E 100
+E 110
+E 120</textarea>
+                <div id="status-izq" class="status-text">LISTO</div>
+                <button id="btn-iniciar" class="btn-azul" onclick="iniciarSecuenciaCompleta()">SORTEAR 1 (VILLA)</button>
+                <button id="btn-reset" class="btn-rojo" onclick="resetearTodo()">RESETEAR SISTEMA</button>
+            </div>
+            <div class="visor-animacion" id="visor-izq"></div>
+            <div class="panel-config">
+                <div style="text-align: center; font-weight: bold; font-size: 12px; text-decoration: underline; margin-bottom:5px;">HORARIO VILLA</div>
+                <div style="display: flex; gap: 5px;">
+                    <div style="flex: 1;"><div class="label-small">INICIO</div><input type="time" id="input-hora-inicio" class="input-config" value="05:48"></div>
+                    <div style="flex: 1;"><div class="label-small">INT (m)</div><input type="number" id="input-minutos" class="input-config" value="14" min="1"></div>
+                </div>
+                <button class="btn-gris-oscuro" onclick="generarNuevoHorarioVilla()">APLICAR CAMBIOS</button>
+                <div id="msg-horario" style="font-size: 10px; color: green; text-align: center; height: 12px;"></div>
+            </div>
+            <div class="panel-contador">
+                <div style="font-weight: bold; font-size: 12px;">UNIDADES SORTEADAS</div>
+                <div id="contador-global" class="numero-contador">0</div>
+            </div>
+        </div>
+
+        <div class="columna-villa">
+            <div class="titulo-lista">VILLA</div>
+            <ul id="lista-villa"></ul>
+        </div>
+
+        <div class="columna-tabla">
+            <div class="header-tabla">RUTA D</div>
+            <div class="tabla-contenedor">
+                <table id="tabla-rutad"><tbody id="body-tabla"></tbody></table>
+            </div>
+            <button class="btn-whatsapp" onclick="generarReporteImagen()">📸 DESCARGAR REPORTE</button>
+        </div>
+
+        <div class="columna-derecha">
+            <div class="panel-gris panel-derecho">
+                <div>
+                    <span class="label-input">SORTEO PRINCIPAL (RUTA D):</span>
+                    <textarea id="lista-der" class="textarea-lista" style="height: 150px;" placeholder="Excedentes aquí..." oninput="calcularTotalUnidades()"></textarea>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                    <div id="status-der" class="status-text" style="font-size: 12px;">EN ESPERA...</div>
+                    <div class="visor-animacion" id="visor-der"></div>
+                </div>
+            </div>
+
+            <div class="panel-multirango">
+                <div class="titulo-multi">Configurar Horario (Rutas Intercaladas)</div>
+                <div id="info-demanda" class="info-demanda">Total Unidades: 0</div>
+                <div class="label-small">¿Cuántos rangos base usar?</div>
+                <select id="sel-num-rangos" class="selector-cantidad" onchange="actualizarRangosVisibles()">
+                    <option value="1">1 Rango</option>
+                    <option value="2">2 Rangos</option>
+                    <option value="3">3 Rangos</option>
+                    <option value="4" selected>4 Rangos</option>
+                </select>
+                <div style="display: grid; grid-template-columns: 0.4fr 1fr 1fr 0.8fr 1.2fr; gap:5px; text-align: center; font-size: 10px; font-weight: bold; margin-bottom:5px;">
+                    <div>#</div> <div>INICIO</div> <div>FIN</div> <div>FREC</div> <div>TIPO</div>
+                </div>
+                <div class="fila-rango" id="fila-r1"><div class="lbl-fila">1</div><input type="time" id="r1-ini" class="input-rango" value="05:00"><input type="time" id="r1-fin" class="input-rango" value="06:00" onchange="sincronizarHoras()"><input type="number" id="r1-frec" class="input-rango" value="10"><select id="r1-tipo" class="input-rango"><option value="INTERCALADO">V/D</option><option value="VILLA">Villa</option><option value="D">D</option></select></div>
+                <div class="fila-rango" id="fila-r2"><div class="lbl-fila">2</div><input type="time" id="r2-ini" class="input-rango input-auto" value="06:00" readonly><input type="time" id="r2-fin" class="input-rango" value="07:00" onchange="sincronizarHoras()"><input type="number" id="r2-frec" class="input-rango" value="10"><select id="r2-tipo" class="input-rango"><option value="INTERCALADO">V/D</option><option value="VILLA">Villa</option><option value="D">D</option></select></div>
+                <div class="fila-rango" id="fila-r3"><div class="lbl-fila">3</div><input type="time" id="r3-ini" class="input-rango input-auto" value="07:00" readonly><input type="time" id="r3-fin" class="input-rango" value="09:00" onchange="sincronizarHoras()"><input type="number" id="r3-frec" class="input-rango" value="10"><select id="r3-tipo" class="input-rango"><option value="INTERCALADO">V/D</option><option value="VILLA">Villa</option><option value="D">D</option></select></div>
+                <div class="fila-rango" id="fila-r4"><div class="lbl-fila">4</div><input type="time" id="r4-ini" class="input-rango input-auto" value="09:00" readonly><input type="time" id="r4-fin" class="input-rango" value="11:00"><input type="number" id="r4-frec" class="input-rango" value="10"><select id="r4-tipo" class="input-rango"><option value="INTERCALADO">V/D</option><option value="VILLA">Villa</option><option value="D">D</option></select></div>
+                <button class="btn-verde-gen" onclick="generarHorarioPorDemanda()">RE-GENERAR TABLA</button>
+                <button class="btn-naranja" onclick="limpiarTablaD()">LIMPIAR TABLA</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="hoja-captura-oculta">
+        <div class="reporte-header">
+            <h1 class="reporte-titulo">PROGRAMACIÓN DE SALIDAS</h1>
+            <div class="reporte-info-grid">
+                <div class="reporte-dato">Frec. VILLA: <span id="rep-frec-villa">--</span> min</div>
+                <div class="reporte-dato">Total Unidades: <span id="rep-total">0</span></div>
+            </div>
+        </div>
+        <div class="reporte-cuerpo">
+            <div class="reporte-col-villa"><div class="reporte-subtitulo">SALIDAS VILLA</div><ul id="lista-villa-reporte"></ul></div>
+            <div class="reporte-col-rutad"><div class="reporte-subtitulo">SALIDAS RUTA D</div><table id="tabla-rutad-reporte"><tbody id="body-tabla-reporte"></tbody></table></div>
+        </div>
+        <div class="reporte-footer"><p class="texto-multa">⚠️ UNIDAD QUE NO SALGA SERÁ MULTADO CON 30 SOLES SIN DERECHO A RECLAMO</p></div>
+    </div>
+
+    <script>
+        let HORARIO_MAESTRO = [];
+        let horasVillaActuales = ["5:48", "6:02", "6:16", "6:30", "6:44", "7:00", "7:14", "7:28", "7:42", "7:56"];
+        const listaIzq = document.getElementById('lista-izq');
+        const listaDer = document.getElementById('lista-der');
+        const ulVilla = document.getElementById('lista-villa');
+        const bodyTabla = document.getElementById('body-tabla');
+        const btnIniciar = document.getElementById('btn-iniciar');
+        const btnReset = document.getElementById('btn-reset');
+        const visorIzq = document.getElementById('visor-izq');
+        const visorDer = document.getElementById('visor-der');
+        const statusIzq = document.getElementById('status-izq');
+        const statusDer = document.getElementById('status-der');
+        const inputLimite = document.getElementById('input-limite');
+        const inputHoraInicio = document.getElementById('input-hora-inicio');
+        const inputMinutos = document.getElementById('input-minutos');
+        const contadorGlobalEl = document.getElementById('contador-global');
+        const selNumRangos = document.getElementById('sel-num-rangos');
+        const msgHorario = document.getElementById('msg-horario');
+        const infoDemanda = document.getElementById('info-demanda');
+
+        let indexTabla = 0; let indexVilla = 0; let backupListaIzq = ""; let backupListaDer = ""; let enCurso = false; let contadorTotalSorteados = 0; let unidadesTotalesEstimadas = 0;
+
+        function calcularTotalUnidades() {
+            const numVilla = parseInt(inputLimite.value) || 0;
+            const lineasDer = listaDer.value.split('\n').filter(l => l.trim() !== '').length;
+            
+            if (lineasDer === 0 && !enCurso && listaIzq.value.trim() !== "") {
+                const lineasIzq = listaIzq.value.split('\n').filter(l => l.trim() !== '').length;
+                unidadesTotalesEstimadas = lineasIzq;
+            } else {
+                unidadesTotalesEstimadas = numVilla + lineasDer;
+            }
+            infoDemanda.textContent = `Total a Programar: ${unidadesTotalesEstimadas}`;
+        }
+
+        function actualizarRangosVisibles() {
+            const num = parseInt(selNumRangos.value);
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`fila-r${i}`).style.display = (i <= num) ? 'grid' : 'none';
+            }
+        }
+        
+        function sincronizarHoras() {
+            document.getElementById('r2-ini').value = document.getElementById('r1-fin').value;
+            document.getElementById('r3-ini').value = document.getElementById('r2-fin').value;
+            document.getElementById('r4-ini').value = document.getElementById('r3-fin').value;
+        }
+
+        function initTabla() {
+            let html = '';
+            if (HORARIO_MAESTRO.length === 0) {
+                html = '<tr><td colspan="3" style="color:#999; padding:20px;">Configure rangos y pulse GENERAR.</td></tr>';
+            } else {
+                HORARIO_MAESTRO.forEach((item, i) => {
+                    const claseTexto = item.t === 'VILLA' ? 'txt-azul' : 'txt-rojo';
+                    const claseCelda = item.lock ? 'celda-bloqueada' : 'celda-normal';
+                    const contenido = item.ganador ? item.ganador : '';
+                    html += `<tr><td class="${claseTexto}">${item.t}</td><td class="${claseTexto}">${item.h}</td><td id="celda-${i}" class="${claseCelda}">${contenido}</td></tr>`;
+                });
+            }
+            bodyTabla.innerHTML = html;
+        }
+
+        // --- LÓGICA DE GENERACIÓN "INFINITA" ---
+        function generarHorarioPorDemanda() {
+            calcularTotalUnidades();
+            HORARIO_MAESTRO = [];
+            const numRangos = parseInt(selNumRangos.value);
+            let contadorIntercalado = 0; 
+            
+            if(unidadesTotalesEstimadas === 0) {
+                initTabla(); return;
+            }
+
+            const iniGlobal = document.getElementById('r1-ini').value;
+            const [hI, mI] = iniGlobal.split(':').map(Number);
+            let dateCursor = new Date(); dateCursor.setHours(hI, mI, 0, 0);
+
+            let configs = [];
+            for(let i=1; i<=numRangos; i++){
+                configs.push({
+                    fin: document.getElementById(`r${i}-fin`).value,
+                    frec: parseInt(document.getElementById(`r${i}-frec`).value),
+                    tipo: document.getElementById(`r${i}-tipo`).value
+                });
+            }
+
+            // CONTADOR DE ESPACIOS VÁLIDOS (NO VERDES)
+            let espaciosValidosGenerados = 0;
+
+            // Bloqueos (pre-calculo básico)
+            const cantidadVillaBloqueada = parseInt(inputLimite.value) || 0;
+            let bloqueosAsignados = 0;
+            const targetTimeBlock = 7 * 60 + 25; // 7:25 en minutos
+
+            // GENERAR HASTA QUE HAYA SUFICIENTES ESPACIOS PARA LOS CÓDIGOS
+            while (espaciosValidosGenerados < unidadesTotalesEstimadas) {
+                let configActual = configs[configs.length - 1];
+                let hStr = dateCursor.getHours().toString().padStart(2,'0') + ":" + dateCursor.getMinutes().toString().padStart(2,'0');
+                
+                for(let i=0; i<configs.length; i++) {
+                    if (hStr < configs[i].fin) { configActual = configs[i]; break; }
+                }
+
+                let h = dateCursor.getHours().toString().padStart(2,'0');
+                let m = dateCursor.getMinutes().toString().padStart(2,'0');
+                let horaStr = `${h}:${m}`;
+                let currentTimeMins = dateCursor.getHours() * 60 + dateCursor.getMinutes();
+
+                let tipoFila = (configActual.tipo === "INTERCALADO") ? ((contadorIntercalado % 2 === 0) ? "VILLA" : "D") : configActual.tipo;
+                if (configActual.tipo === "INTERCALADO") contadorIntercalado++;
+
+                // Determinar si es bloqueo AHORA MISMO
+                let isLock = false;
+                if (tipoFila === 'VILLA' && currentTimeMins >= targetTimeBlock && bloqueosAsignados < cantidadVillaBloqueada) {
+                    isLock = true;
+                    bloqueosAsignados++;
+                }
+
+                HORARIO_MAESTRO.push({ t: tipoFila, h: horaStr, lock: isLock, ganador: null });
+
+                // Solo contamos si NO está bloqueado
+                if (!isLock) {
+                    espaciosValidosGenerados++;
+                }
+
+                dateCursor.setMinutes(dateCursor.getMinutes() + configActual.frec);
+                if (HORARIO_MAESTRO.length > 2000) break;
+            }
+
+            initTabla();
+        }
+
+        function limpiarTablaD() {
+            if(confirm("¿Limpiar la tabla de Ruta D?")) {
+                HORARIO_MAESTRO = []; initTabla(); indexTabla = 0;
+            }
+        }
+
+        function generarNuevoHorarioVilla() {
+            const inicioStr = inputHoraInicio.value; 
+            const intervalo = parseInt(inputMinutos.value);
+            if (!inicioStr || isNaN(intervalo)) { alert("Datos inválidos."); return; }
+
+            const [horas, minutos] = inicioStr.split(':').map(Number);
+            let fechaBase = new Date(); fechaBase.setHours(horas, minutos, 0, 0);
+
+            let nuevasHoras = [];
+            for (let i = 0; i < 30; i++) {
+                let h = fechaBase.getHours().toString().padStart(2,'0');
+                let m = fechaBase.getMinutes().toString().padStart(2,'0');
+                nuevasHoras.push(`${h}:${m}`);
+                fechaBase.setMinutes(fechaBase.getMinutes() + intervalo);
+            }
+            horasVillaActuales = nuevasHoras;
+            
+            const items = ulVilla.querySelectorAll('li');
+            items.forEach((li, index) => {
+                if (horasVillaActuales[index]) li.querySelector('.hora-villa').textContent = horasVillaActuales[index];
+            });
+
+            msgHorario.textContent = "¡Actualizado!";
+            setTimeout(() => msgHorario.textContent = "", 2000);
+        }
+
+        function resetearTodo() {
+            if (enCurso) { if(!confirm("¿Reiniciar?")) return; location.reload(); return; }
+            if (backupListaIzq) listaIzq.value = backupListaIzq;
+            if (backupListaDer) listaDer.value = backupListaDer;
+
+            ulVilla.innerHTML = ''; visorIzq.textContent = ""; visorDer.textContent = "";
+            indexTabla = 0; indexVilla = 0; contadorTotalSorteados = 0;
+            contadorGlobalEl.textContent = "0";
+            
+            calcularTotalUnidades();
+            generarHorarioPorDemanda(); 
+
+            statusIzq.textContent = "LISTO"; statusDer.textContent = "EN ESPERA...";
+            btnIniciar.disabled = false;
+        }
+
+        async function iniciarSecuenciaCompleta() {
+            const raw = listaIzq.value.trim().split('\n').filter(x => x.trim() !== '');
+            const limite = parseInt(inputLimite.value) || 5;
+            if (raw.length === 0) { alert("Lista vacía"); return; }
+            
+            // REGENERAR SIEMPRE AL INICIAR PARA ASEGURAR TAMAÑO
+            calcularTotalUnidades();
+            generarHorarioPorDemanda();
+
+            backupListaIzq = listaIzq.value; backupListaDer = listaDer.value;
+            enCurso = true; btnIniciar.disabled = true; btnReset.disabled = true;
+
+            let bolsaJuego = [...raw];
+            let ganadores = [];
+            ulVilla.innerHTML = ''; indexVilla = 0;
+
+            for (let i = 0; i < limite; i++) {
+                if (bolsaJuego.length === 0) break;
+                statusIzq.textContent = `Sorteando ${i+1}/${limite}...`;
+                const ganador = await animarVisor(visorIzq, bolsaJuego);
+                ganadores.push(ganador);
+                contadorTotalSorteados++; contadorGlobalEl.textContent = contadorTotalSorteados;
+                
+                const li = document.createElement('li');
+                const hora = horasVillaActuales[indexVilla] || "---";
+                li.innerHTML = `<span class="hora-villa">${hora}</span> <span class="num-villa">${ganador}</span>`;
+                ulVilla.appendChild(li);
+                indexVilla++;
+                
+                const idx = bolsaJuego.indexOf(ganador);
+                if (idx > -1) bolsaJuego.splice(idx, 1);
+            }
+            statusIzq.textContent = "¡VILLA FINALIZADO!";
+            
+            let textoPrevio = listaDer.value.trim();
+            let nuevos = bolsaJuego.join('\n');
+            if (textoPrevio !== "") listaDer.value = textoPrevio + "\n" + nuevos;
+            else listaDer.value = nuevos;
+            listaIzq.value = ganadores.join('\n');
+            
+            // Recalcular unidades ahora que tenemos los excedentes en D
+            calcularTotalUnidades();
+            // Opcional: Reajustar tabla si cambió el total (aunque el pre-calculo debería cubrirlo)
+            // Si quieres seguridad total, descomenta la siguiente línea, pero resetearía la tabla visualmente
+            // generarHorarioPorDemanda(); 
+
+            statusDer.textContent = "Iniciando RUTA D...";
+            await new Promise(r => setTimeout(r, 1000));
+
+            let bolsaPrincipal = listaDer.value.trim().split('\n').filter(x => x.trim() !== '');
+            if (bolsaPrincipal.length > 0) {
+                while (bolsaPrincipal.length > 0 && indexTabla < HORARIO_MAESTRO.length) {
+                    if (HORARIO_MAESTRO[indexTabla].lock === true) { indexTabla++; continue; }
+                    if (HORARIO_MAESTRO[indexTabla].ganador) { indexTabla++; continue; }
+
+                    const ganadorD = await animarVisor(visorDer, bolsaPrincipal);
+                    contadorTotalSorteados++; contadorGlobalEl.textContent = contadorTotalSorteados;
+
+                    HORARIO_MAESTRO[indexTabla].ganador = ganadorD;
+                    const celda = document.getElementById(`celda-${indexTabla}`);
+                    if (celda) celda.textContent = ganadorD;
+                    
+                    indexTabla++; 
+                    const idxD = bolsaPrincipal.indexOf(ganadorD);
+                    if (idxD > -1) bolsaPrincipal.splice(idxD, 1);
+                    listaDer.value = bolsaPrincipal.join('\n');
+                }
+                statusDer.textContent = (bolsaPrincipal.length > 0) ? "Tabla llena" : "¡FINALIZADO!";
+            } else { statusDer.textContent = "No hay excedentes."; }
+
+            enCurso = false; btnReset.disabled = false;
+        }
+
+        function animarVisor(visor, lista) {
+            return new Promise(resolve => {
+                let contador = 0; const vueltas = 12; const intervalo = 40; 
+                const timer = setInterval(() => {
+                    const random = lista[Math.floor(Math.random() * lista.length)];
+                    visor.textContent = random;
+                    contador++;
+                    if (contador >= vueltas) {
+                        clearInterval(timer);
+                        const final = lista[Math.floor(Math.random() * lista.length)];
+                        visor.textContent = final; resolve(final);
+                    }
+                }, intervalo);
+            });
+        }
+
+        function generarReporteImagen() {
+            const repFrecVilla = document.getElementById('rep-frec-villa');
+            const repTotal = document.getElementById('rep-total');
+            const listaVillaReporte = document.getElementById('lista-villa-reporte');
+            const bodyTablaReporte = document.getElementById('body-tabla-reporte');
+
+            repFrecVilla.textContent = inputMinutos.value;
+            repTotal.textContent = contadorTotalSorteados;
+            listaVillaReporte.innerHTML = ulVilla.innerHTML;
+            bodyTablaReporte.innerHTML = bodyTabla.innerHTML;
+
+            const elemento = document.getElementById('hoja-captura-oculta');
+            html2canvas(elemento, {
+                scale: 2, windowWidth: 1000,
+                onclone: (clonedDoc) => {
+                    const clon = clonedDoc.getElementById('hoja-captura-oculta');
+                    clon.style.display = 'block'; clon.style.position = 'static';
+                }
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Reporte_Salidas.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+            }).catch(err => alert("Error: " + err));
+        }
+        
+        actualizarRangosVisibles();
+        calcularTotalUnidades();
+    </script>
+</body>
+</html>
