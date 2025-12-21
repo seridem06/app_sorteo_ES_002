@@ -107,18 +107,7 @@
                 <span class="label-input">CANTIDAD A SORTEAR (VILLA):</span>
                 <input type="number" id="input-limite" value="5" min="1" oninput="calcularTotalUnidades()">
                 <span class="label-input">LISTA DE CÓDIGOS:</span>
-                <textarea id="lista-izq" class="textarea-lista" oninput="calcularTotalUnidades()">E 45
-E 56
-E 33
-E 11
-E 21
-E 60
-E 70
-E 80
-E 90
-E 100
-E 110
-E 120</textarea>
+                <textarea id="lista-izq" class="textarea-lista" oninput="calcularTotalUnidades()"></textarea>
                 <div id="status-izq" class="status-text">LISTO</div>
                 <button id="btn-iniciar" class="btn-azul" onclick="iniciarSecuenciaCompleta()">SORTEAR 1 (VILLA)</button>
                 <button id="btn-reset" class="btn-rojo" onclick="resetearTodo()">RESETEAR SISTEMA</button>
@@ -426,9 +415,6 @@ E 120</textarea>
             
             // Recalcular unidades ahora que tenemos los excedentes en D
             calcularTotalUnidades();
-            // Opcional: Reajustar tabla si cambió el total (aunque el pre-calculo debería cubrirlo)
-            // Si quieres seguridad total, descomenta la siguiente línea, pero resetearía la tabla visualmente
-            // generarHorarioPorDemanda(); 
 
             statusDer.textContent = "Iniciando RUTA D...";
             await new Promise(r => setTimeout(r, 1000));
@@ -502,5 +488,9 @@ E 120</textarea>
         actualizarRangosVisibles();
         calcularTotalUnidades();
     </script>
+
+    <!-- ⚠️ IMPORTANTE: EL MÓDULO DE SORTEO FORZADO DEBE CARGARSE AQUÍ AL FINAL -->
+    <script src="sorteo-forzado.js"></script>
+
 </body>
 </html>
