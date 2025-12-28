@@ -6,7 +6,7 @@
     <title>Sorteo Final - Sistema Blindado</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* --- ESTILOS --- */
+        /* --- ESTILOS GENERALES (INTERFAZ) --- */
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         h2 { text-align: center; margin-bottom: 20px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 1px; }
         .contenedor-maestro { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px; width: 100%; max-width: 1450px; }
@@ -63,33 +63,89 @@
         .celda-normal { background-color: #fff; color: #000; font-size: 15px; }
         .celda-bloqueada { background-color: #198754; color: transparent; }
         .panel-derecho { justify-content: flex-start; }
-        /* REPORTE OCULTO */
-        #hoja-captura-oculta { position: absolute; top: -9999px; left: -9999px; width: 900px; background-color: white; padding: 30px; border: 2px solid #333; font-family: 'Arial', sans-serif; }
-        .reporte-header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
-        .reporte-titulo { font-size: 32px; font-weight: 800; margin: 0 0 15px 0; text-transform: uppercase; color: #000; }
-        .reporte-info-grid { display: flex; justify-content: space-between; background-color: #f1f3f5; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
-        .reporte-dato { font-size: 18px; font-weight: bold; color: #333; }
-        .reporte-cuerpo { display: flex; gap: 30px; align-items: flex-start; }
-        .reporte-col-villa { width: 35%; border: 2px solid #333; }
-        .reporte-subtitulo { background-color: #333; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        
+        /* --- ESTILOS DEL REPORTE OCULTO (TAMAÑOS GIGANTES Y COLORES ORIGINALES) --- */
+        #hoja-captura-oculta { 
+            position: absolute; top: -9999px; left: -9999px; 
+            width: 1100px; 
+            background-color: white; padding: 40px; border: 5px solid #000; 
+            font-family: 'Arial Black', 'Arial', sans-serif; 
+        }
+        .reporte-header { text-align: center; border-bottom: 5px solid #000; padding-bottom: 25px; margin-bottom: 30px; }
+        .reporte-titulo { font-size: 42px; font-weight: 900; margin: 0 0 15px 0; text-transform: uppercase; color: #000; letter-spacing: 2px; }
+        
+        .reporte-info-grid { 
+            display: flex; justify-content: space-between; 
+            background-color: #f1f3f5; padding: 20px; 
+            border: 3px solid #000; border-radius: 8px; 
+        }
+        .reporte-dato { font-size: 26px; font-weight: 900; color: #000; }
+        
+        .reporte-cuerpo { display: flex; gap: 40px; align-items: flex-start; }
+        .reporte-col-villa { width: 35%; border: 4px solid #000; }
+        .reporte-subtitulo { 
+            background-color: #000; color: white; 
+            text-align: center; padding: 15px; 
+            font-weight: 900; font-size: 24px; 
+            text-transform: uppercase; letter-spacing: 1px; 
+        }
+        
+        /* LISTA VILLA - RESTAURANDO COLOR GRIS */
         #lista-villa-reporte { list-style: none; padding: 0; margin: 0; }
-        #lista-villa-reporte li { padding: 8px 15px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; font-size: 16px; font-weight: bold; }
+        #lista-villa-reporte li { 
+            padding: 12px 20px; border-bottom: 3px solid #000; 
+            display: flex; justify-content: space-between; 
+            font-size: 28px; 
+            font-weight: 900; 
+        }
+        #lista-villa-reporte li .hora-villa { 
+            color: #6c757d; /* COLOR ORIGINAL RESTAURADO */
+            font-weight: 900; 
+            font-size: 28px; 
+            font-family: 'Arial Black', sans-serif; 
+        }
+        #lista-villa-reporte li .num-villa { 
+            color: #000; 
+            font-weight: 900; 
+            font-size: 32px; 
+            font-family: 'Arial Black', sans-serif; 
+        }
+
         .reporte-col-rutad { width: 65%; }
-        #tabla-rutad-reporte { width: 100%; border-collapse: collapse; }
-        #tabla-rutad-reporte td { border: 1px solid #000; padding: 6px; text-align: center; font-weight: bold; font-size: 16px; }
-        .reporte-footer { margin-top: 30px; border: 3px solid #dc3545; background-color: #fff5f5; padding: 20px; text-align: center; border-radius: 5px; }
-        .texto-multa { color: #dc3545; font-size: 22px; font-weight: 900; text-transform: uppercase; margin: 0; letter-spacing: 1px; }
+        
+        /* TABLA RUTA D - RESTAURANDO COLORES AZUL Y ROJO */
+        #tabla-rutad-reporte { width: 100%; border-collapse: collapse; border: 4px solid #000; }
+        #tabla-rutad-reporte td { 
+            border: 3px solid #000; padding: 10px; text-align: center; 
+            font-weight: 900; 
+            font-size: 30px; 
+            height: 50px; 
+            color: #000; /* Color por defecto para números */
+            font-family: 'Arial Black', sans-serif; 
+        }
+        
+        /* Forzar colores originales en el reporte */
+        #tabla-rutad-reporte .txt-azul { color: #0d6efd !important; font-weight: 900; } 
+        #tabla-rutad-reporte .txt-rojo { color: #dc3545 !important; font-weight: 900; }
+        
+        .reporte-footer { margin-top: 40px; border: 5px solid #dc3545; background-color: #fff5f5; padding: 25px; text-align: center; }
+        .texto-multa { color: #dc3545; font-size: 28px; font-weight: 900; text-transform: uppercase; margin: 0; letter-spacing: 1px; }
     </style>
 </head>
 <body>
-    <h2>Programa de Sorteo </h2>
+    <h2>Programa de Sorteo (Exactitud Garantizada)</h2>
     <div class="contenedor-maestro">
         <div class="columna-control">
             <div class="panel-gris">
                 <span class="label-input">CANTIDAD A SORTEAR (VILLA):</span>
                 <input type="number" id="input-limite" value="5" min="1" oninput="calcularTotalUnidades()">
                 <span class="label-input">LISTA DE CÓDIGOS:</span>
-                <textarea id="lista-izq" class="textarea-lista" oninput="calcularTotalUnidades()"></textarea>
+                <textarea id="lista-izq" class="textarea-lista" oninput="calcularTotalUnidades()">E-100
+E-101
+E-102
+E-103
+E-104
+E-105</textarea>
                 <div id="status-izq" class="status-text">LISTO</div>
                 <button id="btn-iniciar" class="btn-azul" onclick="iniciarSecuenciaCompleta()">SORTEAR 1 (VILLA)</button>
                 <button id="btn-reset" class="btn-rojo" onclick="resetearTodo()">RESETEAR SISTEMA</button>
@@ -339,7 +395,7 @@
             ulVilla.innerHTML = ''; visorIzq.textContent = ""; visorDer.textContent = "";
             indexTabla = 0; indexVilla = 0; contadorTotalSorteados = 0;
             contadorGlobalEl.textContent = "0";
-            ganadoresGlobales.clear(); // Limpiar memoria
+            ganadoresGlobales.clear(); 
             
             calcularTotalUnidades();
             generarHorarioPorDemanda(); 
@@ -358,14 +414,12 @@
             }
         }
 
-        // FUNCIÓN GLOBAL PARA CHECK DE DUPLICADOS (Usada por script externo)
         window.verificarSiYaGano = function(codigo) {
             if (!codigo) return false;
             const norm = s => s.toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
             return ganadoresGlobales.has(norm(codigo));
         };
 
-        // FUNCIÓN PARA REGISTRAR GANADOR
         function registrarGanador(codigo) {
              const norm = s => s.toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
              ganadoresGlobales.add(norm(codigo));
@@ -391,13 +445,10 @@
             for (let i = 0; i < limite; i++) {
                 const reglaP = window.hayReglaPendiente ? window.hayReglaPendiente(horasVillaActuales[indexVilla], 'VILLA') : false;
                 
-                // --- FILTRO DE RESERVAS ---
-                // Si E-42 está programado para Ruta D, lo quitamos de la bolsa temporal de Villa
-                // IMPORTANTE: Solo filtramos si NO es la hora forzada actual
+                // FILTRO DE RESERVAS
                 let bolsaDisponible = bolsaJuego;
                 if (!reglaP && window.esCodigoReservado) {
                     bolsaDisponible = bolsaJuego.filter(c => !window.esCodigoReservado(c));
-                    // Si el filtro nos deja vacíos (muy raro), usamos la bolsa completa
                     if(bolsaDisponible.length === 0) bolsaDisponible = bolsaJuego; 
                 }
 
@@ -405,10 +456,8 @@
                 
                 statusIzq.textContent = `Sorteando ${i+1}/${limite}...`;
                 
-                // Usamos la bolsa disponible (filtrada)
                 const ganador = await window.animarVisor(visorIzq, bolsaDisponible, 'VILLA');
                 
-                // Registro y limpieza
                 ganadores.push(ganador);
                 registrarGanador(ganador);
                 contadorTotalSorteados++; contadorGlobalEl.textContent = contadorTotalSorteados;
@@ -436,20 +485,15 @@
             // FASE 2: RUTA D
             let bolsaPrincipal = listaDer.value.trim().split('\n').filter(x => x.trim() !== '');
             
-            // LIMPIAR DUPLICADOS PREVIOS EN LA BOLSA PRINCIPAL
             for(let g of ganadores) { borrarGanadorInteligente(bolsaPrincipal, g); }
 
             while (indexTabla < HORARIO_MAESTRO.length) {
                 const horaActualD = HORARIO_MAESTRO[indexTabla].h;
                 const reglaPD = window.hayReglaPendiente ? window.hayReglaPendiente(horaActualD, 'TABLA') : false;
                 
-                // --- FILTRO DE RESERVAS TAMBIÉN AQUÍ ---
-                // Para evitar que salga un código programado para MÁS TARDE en la misma tabla
+                // FILTRO DE RESERVAS
                 let bolsaDisponibleD = bolsaPrincipal;
                 if (!reglaPD && window.esCodigoReservado) {
-                    // Nota: esCodigoReservado devuelve TRUE si está en CUALQUIER regla.
-                    // Aquí el truco es que si está reservado, NO debe salir aleatorio.
-                    // Solo saldrá cuando el interceptor (animarVisor) lo fuerce en su turno.
                     bolsaDisponibleD = bolsaPrincipal.filter(c => !window.esCodigoReservado(c));
                     if(bolsaDisponibleD.length === 0) bolsaDisponibleD = bolsaPrincipal;
                 }
@@ -498,23 +542,36 @@
             const repTotal = document.getElementById('rep-total');
             const listaVillaReporte = document.getElementById('lista-villa-reporte');
             const bodyTablaReporte = document.getElementById('body-tabla-reporte');
-            repFrecVilla.textContent = inputMinutos.value;
-            repTotal.textContent = contadorTotalSorteados;
-            listaVillaReporte.innerHTML = ulVilla.innerHTML;
-            bodyTablaReporte.innerHTML = bodyTabla.innerHTML;
-            const elemento = document.getElementById('hoja-captura-oculta');
-            html2canvas(elemento, {
-                scale: 2, windowWidth: 1000,
-                onclone: (clonedDoc) => {
-                    const clon = clonedDoc.getElementById('hoja-captura-oculta');
-                    clon.style.display = 'block'; clon.style.position = 'static';
-                }
+            
+            // CLONAR Y PREPARAR PARA CAPTURA
+            const reporteClonado = document.getElementById('hoja-captura-oculta').cloneNode(true);
+            reporteClonado.style.position = 'fixed';
+            reporteClonado.style.top = '0';
+            reporteClonado.style.left = '0';
+            reporteClonado.style.zIndex = '-100';
+            reporteClonado.style.display = 'block'; 
+            document.body.appendChild(reporteClonado);
+
+            // Actualizar datos en el clon
+            reporteClonado.querySelector('#rep-frec-villa').textContent = inputMinutos.value;
+            reporteClonado.querySelector('#rep-total').textContent = contadorTotalSorteados;
+            reporteClonado.querySelector('#lista-villa-reporte').innerHTML = ulVilla.innerHTML;
+            reporteClonado.querySelector('#body-tabla-reporte').innerHTML = bodyTabla.innerHTML;
+
+            html2canvas(reporteClonado, {
+                scale: 3, // ESCALA AUMENTADA PARA MÁXIMA NITIDEZ
+                useCORS: true,
+                logging: false
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'Reporte_Salidas.jpg';
-                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.download = 'Reporte_Salidas_Oficial.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 1.0);
                 link.click();
-            }).catch(err => alert("Error: " + err));
+                document.body.removeChild(reporteClonado); 
+            }).catch(err => {
+                alert("Error al generar imagen: " + err);
+                if(document.body.contains(reporteClonado)) document.body.removeChild(reporteClonado);
+            });
         }
         
         if (!window.hayReglaPendiente) window.hayReglaPendiente = function() { return false; };
