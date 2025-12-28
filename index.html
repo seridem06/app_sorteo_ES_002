@@ -3,50 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteo Final - Ajuste Perfecto</title>
+    <title>Sorteo Final - Sistema Blindado</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* --- ESTILOS GENERALES --- */
+        /* --- ESTILOS --- */
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         h2 { text-align: center; margin-bottom: 20px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 1px; }
         .contenedor-maestro { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px; width: 100%; max-width: 1450px; }
-        
-        /* COLUMNAS */
         .columna-control, .columna-villa, .columna-tabla, .columna-derecha { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; border: 1px solid #e1e4e8; }
         .columna-control { width: 260px; }
         .columna-villa { width: 170px; align-items: center; }
         .columna-tabla { width: 340px; min-height: 600px; }
         .columna-derecha { width: 400px; }
         @media (max-width: 1200px) { .columna-control, .columna-villa, .columna-tabla, .columna-derecha { width: 95%; max-width: 500px; margin-bottom: 20px; } }
-
-        /* PANELES */
         .panel-gris { background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; margin-bottom: 10px; }
         .panel-config { background-color: #fff; border: 2px dashed #adb5bd; padding: 10px; border-radius: 8px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px; }
         .panel-multirango { background-color: #e3f2fd; border: 2px solid #2196f3; padding: 12px; border-radius: 8px; margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
         .titulo-multi { font-size: 14px; font-weight: bold; text-align: center; color: #1565c0; text-transform: uppercase; border-bottom: 2px solid #90caf9; padding-bottom: 8px; margin-bottom: 8px; }
         .info-demanda { background-color: #bbdefb; color: #0d47a1; padding: 10px; text-align: center; font-weight: bold; border-radius: 6px; font-size: 14px; border: 1px solid #90caf9; margin-bottom: 10px; }
-        
-        /* FILAS Y INPUTS */
         .fila-rango { display: grid; grid-template-columns: 0.4fr 1fr 1fr 0.8fr 1.2fr; gap: 6px; align-items: center; background: white; padding: 6px; border-radius: 5px; border: 1px solid #bbdefb; }
         .lbl-fila { font-size: 12px; font-weight: bold; color: #555; text-align: center; }
         .input-rango { padding: 4px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; text-align: center; width: 100%; box-sizing: border-box; }
         .input-auto { background-color: #f0f0f0; color: #555; cursor: default; }
         select.input-rango { text-align-last: center; }
         .selector-cantidad { width: 100%; padding: 8px; border: 1px solid #2196f3; border-radius: 5px; text-align: center; font-weight: bold; color: #0d47a1; margin-bottom: 10px; background: #fff; cursor: pointer; }
-
-        /* CONTADORES */
         .panel-contador { background-color: #e8f4fd; border: 1px solid #b6d4fe; padding: 12px; text-align: center; border-radius: 8px; margin-top: 15px; }
         .numero-contador { font-size: 42px; font-weight: bold; color: #0d6efd; margin-top: 5px; line-height: 1; }
-
-        /* INPUTS GRALES */
         .label-input { font-size: 13px; font-weight: bold; margin-bottom: 6px; display: block; color: #495057; }
         .label-small { font-size: 11px; font-weight: bold; color: #666; text-align: center; }
         .input-config { padding: 5px; border: 1px solid #ccc; text-align: center; width: 100%; border-radius: 4px; font-size: 13px; }
         #input-limite { width: 100%; padding: 8px; border: 2px solid #0d6efd; text-align: center; margin-bottom: 10px; font-weight: bold; font-size: 18px; border-radius: 5px; color: #0d6efd; }
         .textarea-lista { width: 100%; height: 140px; box-sizing: border-box; border: 1px solid #ccc; padding: 10px; resize: none; font-family: monospace; font-size: 13px; border-radius: 5px; line-height: 1.4; }
         .status-text { color: #dc3545; font-weight: bold; text-align: center; margin: 10px 0; font-size: 14px; }
-
-        /* BOTONES */
         button { cursor: pointer; border-radius: 5px; border: none; font-weight: bold; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-azul { background-color: #0d6efd; color: white; padding: 12px; width: 100%; font-size: 14px; margin-bottom: 8px; }
         .btn-azul:hover:not(:disabled) { background-color: #0b5ed7; }
@@ -60,14 +48,12 @@
         .btn-rojo:hover { background-color: #bb2d3b; }
         .btn-whatsapp { background-color: #20c997; color: white; padding: 14px; font-size: 14px; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-whatsapp:hover { background-color: #1aa179; }
-
         .visor-animacion { border: 3px solid #0d6efd; background-color: #fff; height: 75px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: #198754; width: 100%; border-radius: 8px; margin-top: 5px; }
         .titulo-lista { font-weight: bold; margin-bottom: 12px; text-align: center; color: #495057; font-size: 16px; border-bottom: 2px solid #dee2e6; padding-bottom: 5px; }
         #lista-villa { list-style: none; padding: 0; margin: 0; width: 100%; }
         #lista-villa li { padding: 8px 5px; border-bottom: 1px dashed #dee2e6; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
         .hora-villa { font-weight: bold; color: #6c757d; font-family: monospace; font-size: 15px; }
         .num-villa { font-weight: bold; color: #000; font-size: 15px; }
-        
         .tabla-contenedor { width: 100%; border: 2px solid #333; margin-bottom: 10px; background: #fff; }
         .header-tabla { text-align: center; font-weight: bold; border-bottom: 2px solid #000; padding: 10px; background: #f8f9fa; border: 2px solid #333; border-bottom: none; position: sticky; top: 0; z-index: 10; font-size: 16px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -77,7 +63,6 @@
         .celda-normal { background-color: #fff; color: #000; font-size: 15px; }
         .celda-bloqueada { background-color: #198754; color: transparent; }
         .panel-derecho { justify-content: flex-start; }
-
         /* REPORTE OCULTO */
         #hoja-captura-oculta { position: absolute; top: -9999px; left: -9999px; width: 900px; background-color: white; padding: 30px; border: 2px solid #333; font-family: 'Arial', sans-serif; }
         .reporte-header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
@@ -97,11 +82,8 @@
     </style>
 </head>
 <body>
-
-    <h2>Programa de Sorteo (Exactitud Garantizada)</h2>
-
+    <h2>Programa de Sorteo </h2>
     <div class="contenedor-maestro">
-
         <div class="columna-control">
             <div class="panel-gris">
                 <span class="label-input">CANTIDAD A SORTEAR (VILLA):</span>
@@ -170,12 +152,17 @@
                 <div class="fila-rango" id="fila-r2"><div class="lbl-fila">2</div><input type="time" id="r2-ini" class="input-rango input-auto" value="06:00" readonly><input type="time" id="r2-fin" class="input-rango" value="07:00" onchange="sincronizarHoras()"><input type="number" id="r2-frec" class="input-rango" value="10"><select id="r2-tipo" class="input-rango"><option value="INTERCALADO">V/D</option><option value="VILLA">Villa</option><option value="D">D</option></select></div>
                 <div class="fila-rango" id="fila-r3"><div class="lbl-fila">3</div><input type="time" id="r3-ini" class="input-rango input-auto" value="07:00" readonly><input type="time" id="r3-fin" class="input-rango" value="09:00" onchange="sincronizarHoras()"><input type="number" id="r3-frec" class="input-rango" value="10"><select id="r3-tipo" class="input-rango"><option value="INTERCALADO">V/D</option><option value="VILLA">Villa</option><option value="D">D</option></select></div>
                 <div class="fila-rango" id="fila-r4"><div class="lbl-fila">4</div><input type="time" id="r4-ini" class="input-rango input-auto" value="09:00" readonly><input type="time" id="r4-fin" class="input-rango" value="11:00"><input type="number" id="r4-frec" class="input-rango" value="10"><select id="r4-tipo" class="input-rango"><option value="INTERCALADO">V/D</option><option value="VILLA">Villa</option><option value="D">D</option></select></div>
+                
+                <div style="margin-top:15px; border-top:1px dashed #2196f3; padding-top:10px; text-align:center;">
+                    <div class="label-small" style="color:#1565c0; margin-bottom:5px;">INICIO BLOQUEO (Cuadros Verdes)</div>
+                    <input type="time" id="input-hora-bloqueo" class="input-rango" style="width:100px; font-weight:bold; color:#198754; border:2px solid #198754;" value="07:25">
+                </div>
+                
                 <button class="btn-verde-gen" onclick="generarHorarioPorDemanda()">RE-GENERAR TABLA</button>
                 <button class="btn-naranja" onclick="limpiarTablaD()">LIMPIAR TABLA</button>
             </div>
         </div>
     </div>
-
     <div id="hoja-captura-oculta">
         <div class="reporte-header">
             <h1 class="reporte-titulo">PROGRAMACIÓN DE SALIDAS</h1>
@@ -192,8 +179,12 @@
     </div>
 
     <script>
-        let HORARIO_MAESTRO = [];
-        let horasVillaActuales = ["5:48", "6:02", "6:16", "6:30", "6:44", "7:00", "7:14", "7:28", "7:42", "7:56"];
+        var HORARIO_MAESTRO = [];
+        var horasVillaActuales = ["05:48", "06:02", "06:16", "06:30", "06:44", "07:00", "07:14", "07:28", "07:42", "07:56"];
+        var indexTabla = 0; 
+        var indexVilla = 0;
+        var ganadoresGlobales = new Set();
+
         const listaIzq = document.getElementById('lista-izq');
         const listaDer = document.getElementById('lista-der');
         const ulVilla = document.getElementById('lista-villa');
@@ -211,13 +202,13 @@
         const selNumRangos = document.getElementById('sel-num-rangos');
         const msgHorario = document.getElementById('msg-horario');
         const infoDemanda = document.getElementById('info-demanda');
+        const inputHoraBloqueo = document.getElementById('input-hora-bloqueo');
 
-        let indexTabla = 0; let indexVilla = 0; let backupListaIzq = ""; let backupListaDer = ""; let enCurso = false; let contadorTotalSorteados = 0; let unidadesTotalesEstimadas = 0;
+        let backupListaIzq = ""; let backupListaDer = ""; let enCurso = false; let contadorTotalSorteados = 0; let unidadesTotalesEstimadas = 0;
 
         function calcularTotalUnidades() {
             const numVilla = parseInt(inputLimite.value) || 0;
             const lineasDer = listaDer.value.split('\n').filter(l => l.trim() !== '').length;
-            
             if (lineasDer === 0 && !enCurso && listaIzq.value.trim() !== "") {
                 const lineasIzq = listaIzq.value.split('\n').filter(l => l.trim() !== '').length;
                 unidadesTotalesEstimadas = lineasIzq;
@@ -255,16 +246,12 @@
             bodyTabla.innerHTML = html;
         }
 
-        // --- LÓGICA DE GENERACIÓN "INFINITA" ---
         function generarHorarioPorDemanda() {
             calcularTotalUnidades();
             HORARIO_MAESTRO = [];
             const numRangos = parseInt(selNumRangos.value);
             let contadorIntercalado = 0; 
-            
-            if(unidadesTotalesEstimadas === 0) {
-                initTabla(); return;
-            }
+            if(unidadesTotalesEstimadas === 0) { initTabla(); return; }
 
             const iniGlobal = document.getElementById('r1-ini').value;
             const [hI, mI] = iniGlobal.split(':').map(Number);
@@ -279,19 +266,15 @@
                 });
             }
 
-            // CONTADOR DE ESPACIOS VÁLIDOS (NO VERDES)
             let espaciosValidosGenerados = 0;
-
-            // Bloqueos (pre-calculo básico)
             const cantidadVillaBloqueada = parseInt(inputLimite.value) || 0;
             let bloqueosAsignados = 0;
-            const targetTimeBlock = 7 * 60 + 25; // 7:25 en minutos
+            const [hB, mB] = inputHoraBloqueo.value.split(':').map(Number);
+            const targetTimeBlock = hB * 60 + mB; 
 
-            // GENERAR HASTA QUE HAYA SUFICIENTES ESPACIOS PARA LOS CÓDIGOS
             while (espaciosValidosGenerados < unidadesTotalesEstimadas) {
                 let configActual = configs[configs.length - 1];
                 let hStr = dateCursor.getHours().toString().padStart(2,'0') + ":" + dateCursor.getMinutes().toString().padStart(2,'0');
-                
                 for(let i=0; i<configs.length; i++) {
                     if (hStr < configs[i].fin) { configActual = configs[i]; break; }
                 }
@@ -304,7 +287,6 @@
                 let tipoFila = (configActual.tipo === "INTERCALADO") ? ((contadorIntercalado % 2 === 0) ? "VILLA" : "D") : configActual.tipo;
                 if (configActual.tipo === "INTERCALADO") contadorIntercalado++;
 
-                // Determinar si es bloqueo AHORA MISMO
                 let isLock = false;
                 if (tipoFila === 'VILLA' && currentTimeMins >= targetTimeBlock && bloqueosAsignados < cantidadVillaBloqueada) {
                     isLock = true;
@@ -312,16 +294,11 @@
                 }
 
                 HORARIO_MAESTRO.push({ t: tipoFila, h: horaStr, lock: isLock, ganador: null });
-
-                // Solo contamos si NO está bloqueado
-                if (!isLock) {
-                    espaciosValidosGenerados++;
-                }
+                if (!isLock) espaciosValidosGenerados++;
 
                 dateCursor.setMinutes(dateCursor.getMinutes() + configActual.frec);
                 if (HORARIO_MAESTRO.length > 2000) break;
             }
-
             initTabla();
         }
 
@@ -335,7 +312,6 @@
             const inicioStr = inputHoraInicio.value; 
             const intervalo = parseInt(inputMinutos.value);
             if (!inicioStr || isNaN(intervalo)) { alert("Datos inválidos."); return; }
-
             const [horas, minutos] = inicioStr.split(':').map(Number);
             let fechaBase = new Date(); fechaBase.setHours(horas, minutos, 0, 0);
 
@@ -347,12 +323,10 @@
                 fechaBase.setMinutes(fechaBase.getMinutes() + intervalo);
             }
             horasVillaActuales = nuevasHoras;
-            
             const items = ulVilla.querySelectorAll('li');
             items.forEach((li, index) => {
                 if (horasVillaActuales[index]) li.querySelector('.hora-villa').textContent = horasVillaActuales[index];
             });
-
             msgHorario.textContent = "¡Actualizado!";
             setTimeout(() => msgHorario.textContent = "", 2000);
         }
@@ -365,12 +339,36 @@
             ulVilla.innerHTML = ''; visorIzq.textContent = ""; visorDer.textContent = "";
             indexTabla = 0; indexVilla = 0; contadorTotalSorteados = 0;
             contadorGlobalEl.textContent = "0";
+            ganadoresGlobales.clear(); // Limpiar memoria
             
             calcularTotalUnidades();
             generarHorarioPorDemanda(); 
-
             statusIzq.textContent = "LISTO"; statusDer.textContent = "EN ESPERA...";
             btnIniciar.disabled = false;
+        }
+
+        function borrarGanadorInteligente(lista, ganador) {
+            if (!ganador) return;
+            const norm = s => s.toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+            const meta = norm(ganador);
+            for (let i = lista.length - 1; i >= 0; i--) {
+                if (norm(lista[i]) === meta) {
+                    lista.splice(i, 1);
+                }
+            }
+        }
+
+        // FUNCIÓN GLOBAL PARA CHECK DE DUPLICADOS (Usada por script externo)
+        window.verificarSiYaGano = function(codigo) {
+            if (!codigo) return false;
+            const norm = s => s.toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+            return ganadoresGlobales.has(norm(codigo));
+        };
+
+        // FUNCIÓN PARA REGISTRAR GANADOR
+        function registrarGanador(codigo) {
+             const norm = s => s.toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+             ganadoresGlobales.add(norm(codigo));
         }
 
         async function iniciarSecuenciaCompleta() {
@@ -378,7 +376,6 @@
             const limite = parseInt(inputLimite.value) || 5;
             if (raw.length === 0) { alert("Lista vacía"); return; }
             
-            // REGENERAR SIEMPRE AL INICIAR PARA ASEGURAR TAMAÑO
             calcularTotalUnidades();
             generarHorarioPorDemanda();
 
@@ -388,12 +385,32 @@
             let bolsaJuego = [...raw];
             let ganadores = [];
             ulVilla.innerHTML = ''; indexVilla = 0;
+            ganadoresGlobales.clear(); 
 
+            // FASE 1: VILLA
             for (let i = 0; i < limite; i++) {
-                if (bolsaJuego.length === 0) break;
+                const reglaP = window.hayReglaPendiente ? window.hayReglaPendiente(horasVillaActuales[indexVilla], 'VILLA') : false;
+                
+                // --- FILTRO DE RESERVAS ---
+                // Si E-42 está programado para Ruta D, lo quitamos de la bolsa temporal de Villa
+                // IMPORTANTE: Solo filtramos si NO es la hora forzada actual
+                let bolsaDisponible = bolsaJuego;
+                if (!reglaP && window.esCodigoReservado) {
+                    bolsaDisponible = bolsaJuego.filter(c => !window.esCodigoReservado(c));
+                    // Si el filtro nos deja vacíos (muy raro), usamos la bolsa completa
+                    if(bolsaDisponible.length === 0) bolsaDisponible = bolsaJuego; 
+                }
+
+                if (bolsaDisponible.length === 0 && !reglaP) break;
+                
                 statusIzq.textContent = `Sorteando ${i+1}/${limite}...`;
-                const ganador = await animarVisor(visorIzq, bolsaJuego);
+                
+                // Usamos la bolsa disponible (filtrada)
+                const ganador = await window.animarVisor(visorIzq, bolsaDisponible, 'VILLA');
+                
+                // Registro y limpieza
                 ganadores.push(ganador);
+                registrarGanador(ganador);
                 contadorTotalSorteados++; contadorGlobalEl.textContent = contadorTotalSorteados;
                 
                 const li = document.createElement('li');
@@ -402,8 +419,7 @@
                 ulVilla.appendChild(li);
                 indexVilla++;
                 
-                const idx = bolsaJuego.indexOf(ganador);
-                if (idx > -1) bolsaJuego.splice(idx, 1);
+                borrarGanadorInteligente(bolsaJuego, ganador);
             }
             statusIzq.textContent = "¡VILLA FINALIZADO!";
             
@@ -413,63 +429,79 @@
             else listaDer.value = nuevos;
             listaIzq.value = ganadores.join('\n');
             
-            // Recalcular unidades ahora que tenemos los excedentes en D
             calcularTotalUnidades();
-
             statusDer.textContent = "Iniciando RUTA D...";
             await new Promise(r => setTimeout(r, 1000));
 
+            // FASE 2: RUTA D
             let bolsaPrincipal = listaDer.value.trim().split('\n').filter(x => x.trim() !== '');
-            if (bolsaPrincipal.length > 0) {
-                while (bolsaPrincipal.length > 0 && indexTabla < HORARIO_MAESTRO.length) {
-                    if (HORARIO_MAESTRO[indexTabla].lock === true) { indexTabla++; continue; }
-                    if (HORARIO_MAESTRO[indexTabla].ganador) { indexTabla++; continue; }
+            
+            // LIMPIAR DUPLICADOS PREVIOS EN LA BOLSA PRINCIPAL
+            for(let g of ganadores) { borrarGanadorInteligente(bolsaPrincipal, g); }
 
-                    const ganadorD = await animarVisor(visorDer, bolsaPrincipal);
-                    contadorTotalSorteados++; contadorGlobalEl.textContent = contadorTotalSorteados;
-
-                    HORARIO_MAESTRO[indexTabla].ganador = ganadorD;
-                    const celda = document.getElementById(`celda-${indexTabla}`);
-                    if (celda) celda.textContent = ganadorD;
-                    
-                    indexTabla++; 
-                    const idxD = bolsaPrincipal.indexOf(ganadorD);
-                    if (idxD > -1) bolsaPrincipal.splice(idxD, 1);
-                    listaDer.value = bolsaPrincipal.join('\n');
+            while (indexTabla < HORARIO_MAESTRO.length) {
+                const horaActualD = HORARIO_MAESTRO[indexTabla].h;
+                const reglaPD = window.hayReglaPendiente ? window.hayReglaPendiente(horaActualD, 'TABLA') : false;
+                
+                // --- FILTRO DE RESERVAS TAMBIÉN AQUÍ ---
+                // Para evitar que salga un código programado para MÁS TARDE en la misma tabla
+                let bolsaDisponibleD = bolsaPrincipal;
+                if (!reglaPD && window.esCodigoReservado) {
+                    // Nota: esCodigoReservado devuelve TRUE si está en CUALQUIER regla.
+                    // Aquí el truco es que si está reservado, NO debe salir aleatorio.
+                    // Solo saldrá cuando el interceptor (animarVisor) lo fuerce en su turno.
+                    bolsaDisponibleD = bolsaPrincipal.filter(c => !window.esCodigoReservado(c));
+                    if(bolsaDisponibleD.length === 0) bolsaDisponibleD = bolsaPrincipal;
                 }
-                statusDer.textContent = (bolsaPrincipal.length > 0) ? "Tabla llena" : "¡FINALIZADO!";
-            } else { statusDer.textContent = "No hay excedentes."; }
 
+                if (bolsaDisponibleD.length === 0 && !reglaPD) break;
+                if (HORARIO_MAESTRO[indexTabla].lock === true) { indexTabla++; continue; }
+                if (HORARIO_MAESTRO[indexTabla].ganador) { indexTabla++; continue; }
+
+                const ganadorD = await window.animarVisor(visorDer, bolsaDisponibleD, 'TABLA');
+                
+                registrarGanador(ganadorD);
+                contadorTotalSorteados++; contadorGlobalEl.textContent = contadorTotalSorteados;
+
+                HORARIO_MAESTRO[indexTabla].ganador = ganadorD;
+                const celda = document.getElementById(`celda-${indexTabla}`);
+                if (celda) celda.textContent = ganadorD;
+                
+                indexTabla++; 
+                
+                borrarGanadorInteligente(bolsaPrincipal, ganadorD);
+                listaDer.value = bolsaPrincipal.join('\n');
+            }
+            statusDer.textContent = (bolsaPrincipal.length > 0) ? "Tabla llena" : "¡FINALIZADO!";
             enCurso = false; btnReset.disabled = false;
         }
 
-        function animarVisor(visor, lista) {
+        window.animarVisor = function(visor, lista, contexto) {
             return new Promise(resolve => {
                 let contador = 0; const vueltas = 12; const intervalo = 40; 
+                const listaVisual = lista.length > 0 ? lista : ["--", "00"];
                 const timer = setInterval(() => {
-                    const random = lista[Math.floor(Math.random() * lista.length)];
+                    const random = listaVisual[Math.floor(Math.random() * listaVisual.length)];
                     visor.textContent = random;
                     contador++;
                     if (contador >= vueltas) {
                         clearInterval(timer);
-                        const final = lista[Math.floor(Math.random() * lista.length)];
+                        const final = listaVisual[Math.floor(Math.random() * listaVisual.length)];
                         visor.textContent = final; resolve(final);
                     }
                 }, intervalo);
             });
-        }
+        };
 
         function generarReporteImagen() {
             const repFrecVilla = document.getElementById('rep-frec-villa');
             const repTotal = document.getElementById('rep-total');
             const listaVillaReporte = document.getElementById('lista-villa-reporte');
             const bodyTablaReporte = document.getElementById('body-tabla-reporte');
-
             repFrecVilla.textContent = inputMinutos.value;
             repTotal.textContent = contadorTotalSorteados;
             listaVillaReporte.innerHTML = ulVilla.innerHTML;
             bodyTablaReporte.innerHTML = bodyTabla.innerHTML;
-
             const elemento = document.getElementById('hoja-captura-oculta');
             html2canvas(elemento, {
                 scale: 2, windowWidth: 1000,
@@ -485,12 +517,11 @@
             }).catch(err => alert("Error: " + err));
         }
         
+        if (!window.hayReglaPendiente) window.hayReglaPendiente = function() { return false; };
+
         actualizarRangosVisibles();
         calcularTotalUnidades();
     </script>
-
-    <!-- ⚠️ IMPORTANTE: EL MÓDULO DE SORTEO FORZADO DEBE CARGARSE AQUÍ AL FINAL -->
     <script src="sorteo-forzado.js"></script>
-
 </body>
 </html>
