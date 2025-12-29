@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteo Final - Sistema Blindado</title>
+    <title>Sorteo dE SALIDAS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* --- ESTILOS GENERALES (INTERFAZ) --- */
+        /* --- ESTILOS GENERALES --- */
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         h2 { text-align: center; margin-bottom: 20px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 1px; }
         .contenedor-maestro { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px; width: 100%; max-width: 1450px; }
@@ -98,18 +98,8 @@
             font-size: 28px; 
             font-weight: 900; 
         }
-        #lista-villa-reporte li .hora-villa { 
-            color: #6c757d; /* COLOR ORIGINAL RESTAURADO */
-            font-weight: 900; 
-            font-size: 28px; 
-            font-family: 'Arial Black', sans-serif; 
-        }
-        #lista-villa-reporte li .num-villa { 
-            color: #000; 
-            font-weight: 900; 
-            font-size: 32px; 
-            font-family: 'Arial Black', sans-serif; 
-        }
+        #lista-villa-reporte li .hora-villa { color: #6c757d; font-weight: 900; font-size: 28px; font-family: 'Arial Black', sans-serif; }
+        #lista-villa-reporte li .num-villa { color: #000; font-weight: 900; font-size: 32px; font-family: 'Arial Black', sans-serif; }
 
         .reporte-col-rutad { width: 65%; }
         
@@ -120,11 +110,9 @@
             font-weight: 900; 
             font-size: 30px; 
             height: 50px; 
-            color: #000; /* Color por defecto para números */
+            color: #000; 
             font-family: 'Arial Black', sans-serif; 
         }
-        
-        /* Forzar colores originales en el reporte */
         #tabla-rutad-reporte .txt-azul { color: #0d6efd !important; font-weight: 900; } 
         #tabla-rutad-reporte .txt-rojo { color: #dc3545 !important; font-weight: 900; }
         
@@ -133,19 +121,14 @@
     </style>
 </head>
 <body>
-    <h2>Programa de Sorteo (Exactitud Garantizada)</h2>
+    <h2>Programa de Sorteo </h2>
     <div class="contenedor-maestro">
         <div class="columna-control">
             <div class="panel-gris">
                 <span class="label-input">CANTIDAD A SORTEAR (VILLA):</span>
                 <input type="number" id="input-limite" value="5" min="1" oninput="calcularTotalUnidades()">
                 <span class="label-input">LISTA DE CÓDIGOS:</span>
-                <textarea id="lista-izq" class="textarea-lista" oninput="calcularTotalUnidades()">E-100
-E-101
-E-102
-E-103
-E-104
-E-105</textarea>
+                <textarea id="lista-izq" class="textarea-lista" oninput="calcularTotalUnidades()"></textarea>
                 <div id="status-izq" class="status-text">LISTO</div>
                 <button id="btn-iniciar" class="btn-azul" onclick="iniciarSecuenciaCompleta()">SORTEAR 1 (VILLA)</button>
                 <button id="btn-reset" class="btn-rojo" onclick="resetearTodo()">RESETEAR SISTEMA</button>
@@ -219,20 +202,6 @@ E-105</textarea>
             </div>
         </div>
     </div>
-    <div id="hoja-captura-oculta">
-        <div class="reporte-header">
-            <h1 class="reporte-titulo">PROGRAMACIÓN DE SALIDAS</h1>
-            <div class="reporte-info-grid">
-                <div class="reporte-dato">Frec. VILLA: <span id="rep-frec-villa">--</span> min</div>
-                <div class="reporte-dato">Total Unidades: <span id="rep-total">0</span></div>
-            </div>
-        </div>
-        <div class="reporte-cuerpo">
-            <div class="reporte-col-villa"><div class="reporte-subtitulo">SALIDAS VILLA</div><ul id="lista-villa-reporte"></ul></div>
-            <div class="reporte-col-rutad"><div class="reporte-subtitulo">SALIDAS RUTA D</div><table id="tabla-rutad-reporte"><tbody id="body-tabla-reporte"></tbody></table></div>
-        </div>
-        <div class="reporte-footer"><p class="texto-multa">⚠️ UNIDAD QUE NO SALGA SERÁ MULTADO CON 30 SOLES SIN DERECHO A RECLAMO</p></div>
-    </div>
 
     <script>
         var HORARIO_MAESTRO = [];
@@ -265,12 +234,10 @@ E-105</textarea>
         function calcularTotalUnidades() {
             const numVilla = parseInt(inputLimite.value) || 0;
             const lineasDer = listaDer.value.split('\n').filter(l => l.trim() !== '').length;
-            if (lineasDer === 0 && !enCurso && listaIzq.value.trim() !== "") {
-                const lineasIzq = listaIzq.value.split('\n').filter(l => l.trim() !== '').length;
-                unidadesTotalesEstimadas = lineasIzq;
-            } else {
-                unidadesTotalesEstimadas = numVilla + lineasDer;
-            }
+            const lineasIzq = listaIzq.value.split('\n').filter(l => l.trim() !== '').length;
+            
+            // CÁLCULO DIRECTO: Suma de los dos cuadros
+            unidadesTotalesEstimadas = lineasIzq + lineasDer;
             infoDemanda.textContent = `Total a Programar: ${unidadesTotalesEstimadas}`;
         }
 
@@ -289,24 +256,20 @@ E-105</textarea>
 
         function initTabla() {
             let html = '';
-            if (HORARIO_MAESTRO.length === 0) {
-                html = '<tr><td colspan="3" style="color:#999; padding:20px;">Configure rangos y pulse GENERAR.</td></tr>';
-            } else {
-                HORARIO_MAESTRO.forEach((item, i) => {
-                    const claseTexto = item.t === 'VILLA' ? 'txt-azul' : 'txt-rojo';
-                    const claseCelda = item.lock ? 'celda-bloqueada' : 'celda-normal';
-                    const contenido = item.ganador ? item.ganador : '';
-                    html += `<tr><td class="${claseTexto}">${item.t}</td><td class="${claseTexto}">${item.h}</td><td id="celda-${i}" class="${claseCelda}">${contenido}</td></tr>`;
-                });
-            }
+            HORARIO_MAESTRO.forEach((item, i) => {
+                const claseTexto = item.t === 'VILLA' ? 'txt-azul' : 'txt-rojo';
+                const claseCelda = item.lock ? 'celda-bloqueada' : 'celda-normal';
+                const contenido = item.ganador ? item.ganador : '';
+                html += `<tr><td class="${claseTexto}">${item.t}</td><td class="${claseTexto}">${item.h}</td><td id="celda-${i}" class="${claseCelda}">${contenido}</td></tr>`;
+            });
             bodyTabla.innerHTML = html;
         }
 
+        // --- LÓGICA DE GENERACIÓN MEJORADA ---
         function generarHorarioPorDemanda() {
             calcularTotalUnidades();
             HORARIO_MAESTRO = [];
             const numRangos = parseInt(selNumRangos.value);
-            let contadorIntercalado = 0; 
             if(unidadesTotalesEstimadas === 0) { initTabla(); return; }
 
             const iniGlobal = document.getElementById('r1-ini').value;
@@ -323,14 +286,20 @@ E-105</textarea>
             }
 
             let espaciosValidosGenerados = 0;
+            let bloqueosAsignados = 0; // CONTADOR DE BLOQUEOS REAL
             const cantidadVillaBloqueada = parseInt(inputLimite.value) || 0;
-            let bloqueosAsignados = 0;
             const [hB, mB] = inputHoraBloqueo.value.split(':').map(Number);
             const targetTimeBlock = hB * 60 + mB; 
 
-            while (espaciosValidosGenerados < unidadesTotalesEstimadas) {
+            let contadorIntercalado = 0;
+            
+            // CÁLCULO EXACTO: Huecos que necesitamos en la tabla = Total de Códigos - Códigos que se van a Villa
+            let slotsNecesariosTabla = Math.max(0, unidadesTotalesEstimadas - cantidadVillaBloqueada);
+
+            while (espaciosValidosGenerados < slotsNecesariosTabla) {
                 let configActual = configs[configs.length - 1];
                 let hStr = dateCursor.getHours().toString().padStart(2,'0') + ":" + dateCursor.getMinutes().toString().padStart(2,'0');
+                
                 for(let i=0; i<configs.length; i++) {
                     if (hStr < configs[i].fin) { configActual = configs[i]; break; }
                 }
@@ -344,12 +313,17 @@ E-105</textarea>
                 if (configActual.tipo === "INTERCALADO") contadorIntercalado++;
 
                 let isLock = false;
-                if (tipoFila === 'VILLA' && currentTimeMins >= targetTimeBlock && bloqueosAsignados < cantidadVillaBloqueada) {
-                    isLock = true;
-                    bloqueosAsignados++;
+                // SOLO BLOQUEAR SI NO SE HA SUPERADO EL LÍMITE DE VILLA
+                if (tipoFila === 'VILLA' && currentTimeMins >= targetTimeBlock) {
+                    if (bloqueosAsignados < cantidadVillaBloqueada) {
+                        isLock = true;
+                        bloqueosAsignados++;
+                    }
                 }
 
                 HORARIO_MAESTRO.push({ t: tipoFila, h: horaStr, lock: isLock, ganador: null });
+                
+                // Si no está bloqueado, cuenta como espacio válido para un código
                 if (!isLock) espaciosValidosGenerados++;
 
                 dateCursor.setMinutes(dateCursor.getMinutes() + configActual.frec);
@@ -358,19 +332,12 @@ E-105</textarea>
             initTabla();
         }
 
-        function limpiarTablaD() {
-            if(confirm("¿Limpiar la tabla de Ruta D?")) {
-                HORARIO_MAESTRO = []; initTabla(); indexTabla = 0;
-            }
-        }
-
         function generarNuevoHorarioVilla() {
             const inicioStr = inputHoraInicio.value; 
             const intervalo = parseInt(inputMinutos.value);
-            if (!inicioStr || isNaN(intervalo)) { alert("Datos inválidos."); return; }
+            if (!inicioStr || isNaN(intervalo)) return;
             const [horas, minutos] = inicioStr.split(':').map(Number);
             let fechaBase = new Date(); fechaBase.setHours(horas, minutos, 0, 0);
-
             let nuevasHoras = [];
             for (let i = 0; i < 30; i++) {
                 let h = fechaBase.getHours().toString().padStart(2,'0');
@@ -391,12 +358,10 @@ E-105</textarea>
             if (enCurso) { if(!confirm("¿Reiniciar?")) return; location.reload(); return; }
             if (backupListaIzq) listaIzq.value = backupListaIzq;
             if (backupListaDer) listaDer.value = backupListaDer;
-
             ulVilla.innerHTML = ''; visorIzq.textContent = ""; visorDer.textContent = "";
             indexTabla = 0; indexVilla = 0; contadorTotalSorteados = 0;
             contadorGlobalEl.textContent = "0";
             ganadoresGlobales.clear(); 
-            
             calcularTotalUnidades();
             generarHorarioPorDemanda(); 
             statusIzq.textContent = "LISTO"; statusDer.textContent = "EN ESPERA...";
@@ -408,9 +373,7 @@ E-105</textarea>
             const norm = s => s.toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
             const meta = norm(ganador);
             for (let i = lista.length - 1; i >= 0; i--) {
-                if (norm(lista[i]) === meta) {
-                    lista.splice(i, 1);
-                }
+                if (norm(lista[i]) === meta) lista.splice(i, 1);
             }
         }
 
@@ -425,13 +388,20 @@ E-105</textarea>
              ganadoresGlobales.add(norm(codigo));
         }
 
+        function limpiarTablaD() {
+            if(confirm("¿Limpiar la tabla de Ruta D?")) {
+                HORARIO_MAESTRO = []; initTabla(); indexTabla = 0;
+            }
+        }
+
         async function iniciarSecuenciaCompleta() {
+            // Aseguramos que la tabla tenga el tamaño correcto antes de empezar
+            calcularTotalUnidades();
+            generarHorarioPorDemanda();
+
             const raw = listaIzq.value.trim().split('\n').filter(x => x.trim() !== '');
             const limite = parseInt(inputLimite.value) || 5;
             if (raw.length === 0) { alert("Lista vacía"); return; }
-            
-            calcularTotalUnidades();
-            generarHorarioPorDemanda();
 
             backupListaIzq = listaIzq.value; backupListaDer = listaDer.value;
             enCurso = true; btnIniciar.disabled = true; btnReset.disabled = true;
@@ -444,18 +414,14 @@ E-105</textarea>
             // FASE 1: VILLA
             for (let i = 0; i < limite; i++) {
                 const reglaP = window.hayReglaPendiente ? window.hayReglaPendiente(horasVillaActuales[indexVilla], 'VILLA') : false;
-                
-                // FILTRO DE RESERVAS
                 let bolsaDisponible = bolsaJuego;
                 if (!reglaP && window.esCodigoReservado) {
                     bolsaDisponible = bolsaJuego.filter(c => !window.esCodigoReservado(c));
                     if(bolsaDisponible.length === 0) bolsaDisponible = bolsaJuego; 
                 }
-
                 if (bolsaDisponible.length === 0 && !reglaP) break;
                 
                 statusIzq.textContent = `Sorteando ${i+1}/${limite}...`;
-                
                 const ganador = await window.animarVisor(visorIzq, bolsaDisponible, 'VILLA');
                 
                 ganadores.push(ganador);
@@ -482,23 +448,80 @@ E-105</textarea>
             statusDer.textContent = "Iniciando RUTA D...";
             await new Promise(r => setTimeout(r, 1000));
 
-            // FASE 2: RUTA D
             let bolsaPrincipal = listaDer.value.trim().split('\n').filter(x => x.trim() !== '');
-            
             for(let g of ganadores) { borrarGanadorInteligente(bolsaPrincipal, g); }
 
-            while (indexTabla < HORARIO_MAESTRO.length) {
+            // LOOP PRINCIPAL CON EXPANSIÓN AUTOMÁTICA
+            while (true) {
+                let hayRegla = false;
+                if (indexTabla < HORARIO_MAESTRO.length) {
+                    hayRegla = window.hayReglaPendiente ? window.hayReglaPendiente(HORARIO_MAESTRO[indexTabla].h, 'TABLA') : false;
+                }
+                
+                // Si la bolsa está vacía y no hay regla pendiente, paramos
+                if (bolsaPrincipal.length === 0 && !hayRegla) break;
+
+                // --- EXPANSIÓN INFINITA: Si se acaba la tabla, creamos más filas ---
+                if (indexTabla >= HORARIO_MAESTRO.length) {
+                    const lastRow = HORARIO_MAESTRO[HORARIO_MAESTRO.length-1];
+                    const [lh, lm] = lastRow.h.split(':').map(Number);
+                    let d = new Date(); d.setHours(lh, lm, 0, 0);
+                    
+                    // Buscar configuración actual para saber la frecuencia
+                    const numRangos = parseInt(selNumRangos.value);
+                    let configs = [];
+                    for(let i=1; i<=numRangos; i++){
+                        configs.push({
+                            fin: document.getElementById(`r${i}-fin`).value,
+                            frec: parseInt(document.getElementById(`r${i}-frec`).value),
+                            tipo: document.getElementById(`r${i}-tipo`).value
+                        });
+                    }
+                    let frec = 10;
+                    let hStr = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+                    for(let c of configs) { if(hStr < c.fin) { frec = c.frec; break; } }
+                    
+                    d.setMinutes(d.getMinutes() + frec);
+                    let nh = d.getHours().toString().padStart(2,'0');
+                    let nm = d.getMinutes().toString().padStart(2,'0');
+                    
+                    let tipo = lastRow.t === 'VILLA' ? 'D' : 'VILLA'; 
+                    let isLock = false;
+                    const [hB, mB] = inputHoraBloqueo.value.split(':').map(Number);
+                    const limiteVilla = parseInt(inputLimite.value) || 0;
+                    const bloqueosActuales = HORARIO_MAESTRO.filter(r => r.lock).length;
+
+                    // SOLO BLOQUEAR SI NO SE HA SUPERADO EL LÍMITE DE VILLA
+                    if (tipo === 'VILLA' && (d.getHours()*60 + d.getMinutes()) >= (hB*60 + mB)) {
+                        if (bloqueosActuales < limiteVilla) {
+                            isLock = true;
+                        }
+                    }
+
+                    HORARIO_MAESTRO.push({ t: tipo, h: `${nh}:${nm}`, lock: isLock, ganador: null });
+                    
+                    const i = HORARIO_MAESTRO.length - 1;
+                    const item = HORARIO_MAESTRO[i];
+                    const tr = document.createElement('tr');
+                    const cTxt = item.t === 'VILLA' ? 'txt-azul' : 'txt-rojo';
+                    const cCel = item.lock ? 'celda-bloqueada' : 'celda-normal';
+                    tr.innerHTML = `<td class="${cTxt}">${item.t}</td><td class="${cTxt}">${item.h}</td><td id="celda-${i}" class="${cCel}"></td>`;
+                    bodyTabla.appendChild(tr);
+                }
+                // ------------------------------------------
+
                 const horaActualD = HORARIO_MAESTRO[indexTabla].h;
                 const reglaPD = window.hayReglaPendiente ? window.hayReglaPendiente(horaActualD, 'TABLA') : false;
                 
-                // FILTRO DE RESERVAS
                 let bolsaDisponibleD = bolsaPrincipal;
                 if (!reglaPD && window.esCodigoReservado) {
                     bolsaDisponibleD = bolsaPrincipal.filter(c => !window.esCodigoReservado(c));
                     if(bolsaDisponibleD.length === 0) bolsaDisponibleD = bolsaPrincipal;
                 }
 
+                // Si no hay bolsa disponible y no hay regla, paramos (doble check)
                 if (bolsaDisponibleD.length === 0 && !reglaPD) break;
+
                 if (HORARIO_MAESTRO[indexTabla].lock === true) { indexTabla++; continue; }
                 if (HORARIO_MAESTRO[indexTabla].ganador) { indexTabla++; continue; }
 
@@ -516,7 +539,7 @@ E-105</textarea>
                 borrarGanadorInteligente(bolsaPrincipal, ganadorD);
                 listaDer.value = bolsaPrincipal.join('\n');
             }
-            statusDer.textContent = (bolsaPrincipal.length > 0) ? "Tabla llena" : "¡FINALIZADO!";
+            statusDer.textContent = "¡FINALIZADO!";
             enCurso = false; btnReset.disabled = false;
         }
 
@@ -543,35 +566,30 @@ E-105</textarea>
             const listaVillaReporte = document.getElementById('lista-villa-reporte');
             const bodyTablaReporte = document.getElementById('body-tabla-reporte');
             
-            // CLONAR Y PREPARAR PARA CAPTURA
-            const reporteClonado = document.getElementById('hoja-captura-oculta').cloneNode(true);
-            reporteClonado.style.position = 'fixed';
-            reporteClonado.style.top = '0';
-            reporteClonado.style.left = '0';
-            reporteClonado.style.zIndex = '-100';
-            reporteClonado.style.display = 'block'; 
-            document.body.appendChild(reporteClonado);
-
-            // Actualizar datos en el clon
-            reporteClonado.querySelector('#rep-frec-villa').textContent = inputMinutos.value;
-            reporteClonado.querySelector('#rep-total').textContent = contadorTotalSorteados;
-            reporteClonado.querySelector('#lista-villa-reporte').innerHTML = ulVilla.innerHTML;
-            reporteClonado.querySelector('#body-tabla-reporte').innerHTML = bodyTabla.innerHTML;
-
-            html2canvas(reporteClonado, {
-                scale: 3, // ESCALA AUMENTADA PARA MÁXIMA NITIDEZ
+            // USAR CLONACIÓN SEGURA PARA CAPTURA
+            const elementoOrigen = document.getElementById('hoja-captura-oculta');
+            
+            html2canvas(elementoOrigen, {
+                scale: 3, // ALTA CALIDAD
                 useCORS: true,
-                logging: false
+                onclone: (clonedDoc) => {
+                    // Manipular el clon para que sea visible y tenga datos actualizados
+                    const clon = clonedDoc.getElementById('hoja-captura-oculta');
+                    clon.style.display = 'block'; 
+                    clon.style.position = 'static'; // Asegurar que no esté fuera de pantalla en el clon
+                    
+                    // Pasar datos al clon
+                    clonedDoc.getElementById('rep-frec-villa').textContent = inputMinutos.value;
+                    clonedDoc.getElementById('rep-total').textContent = contadorTotalSorteados;
+                    clonedDoc.getElementById('lista-villa-reporte').innerHTML = ulVilla.innerHTML;
+                    clonedDoc.getElementById('body-tabla-reporte').innerHTML = bodyTabla.innerHTML;
+                }
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'Reporte_Salidas_Oficial.jpg';
                 link.href = canvas.toDataURL('image/jpeg', 1.0);
                 link.click();
-                document.body.removeChild(reporteClonado); 
-            }).catch(err => {
-                alert("Error al generar imagen: " + err);
-                if(document.body.contains(reporteClonado)) document.body.removeChild(reporteClonado);
-            });
+            }).catch(err => alert("Error al generar imagen: " + err));
         }
         
         if (!window.hayReglaPendiente) window.hayReglaPendiente = function() { return false; };
