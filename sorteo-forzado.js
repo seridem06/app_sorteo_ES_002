@@ -1,3 +1,4 @@
+/* === sorteo-forzado.js === */
 (function() {
     'use strict';
     
@@ -140,6 +141,7 @@
     }
 
     // --- INTERCEPTOR ---
+    // IMPORTANTE: Este bloque espera que window.animarVisor YA exista (creado por script.js)
     if (typeof window.animarVisor === 'function') {
         const originalAnimarVisor = window.animarVisor;
 
