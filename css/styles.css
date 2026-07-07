@@ -18,9 +18,6 @@ body {
     align-items: center;
     min-height: 100vh;
 }
-body {
-    background-color: red !important;
-}
 h2 { text-align: center; margin-bottom: 20px; color: #f5f1ede1; text-transform: uppercase; letter-spacing: 1px; }
 
 /* ESTRUCTURA DE COLUMNAS (Flexbox) */
@@ -34,6 +31,29 @@ h2 { text-align: center; margin-bottom: 20px; color: #f5f1ede1; text-transform: 
 
 /* RESPONSIVE DESIGN (Para móviles y tablets) */
 @media (max-width: 1200px) { .columna-control, .columna-villa, .columna-tabla, .columna-derecha { width: 95%; max-width: 500px; margin-bottom: 20px; } }
+
+/* RESPONSIVE DESIGN (Celulares) */
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    h2 { font-size: 22px; margin-bottom: 15px; }
+    .contenedor-maestro { gap: 12px; }
+    .columna-control, .columna-villa, .columna-tabla, .columna-derecha { width: 100%; max-width: 100%; padding: 12px; }
+
+    /* La tabla de rangos (INICIO/FIN/FREC/TIPO) es lo más difícil de encoger:
+       en vez de aplastar las 5 columnas, permitimos scroll horizontal solo ahí */
+    .fila-rango { grid-template-columns: 0.3fr 0.9fr 0.9fr 0.6fr 1fr; gap: 4px; font-size: 11px; }
+    .input-rango { padding: 3px; font-size: 11px; }
+
+    /* Tabla de RUTA D: si el contenido es ancho, que haga scroll en vez de romper el layout */
+    .tabla-contenedor { overflow-x: auto; }
+    .columna-tabla { min-height: auto; }
+
+    .numero-contador { font-size: 32px; }
+    .btn-azul, .btn-verde-gen, .btn-whatsapp { font-size: 13px; padding: 10px; }
+    .titulo-multi { font-size: 13px; }
+    .info-demanda { font-size: 13px; padding: 8px; }
+    footer p { font-size: 12px; padding: 0 10px; }
+}
 
 /* PANELES Y CONTENEDORES INTERNOS */
 .panel-gris { background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; margin-bottom: 10px; }
@@ -64,19 +84,81 @@ select.input-rango { text-align-last: center; }
 .textarea-lista { width: 100%; height: 140px; box-sizing: border-box; border: 1px solid #ccc; padding: 10px; resize: none; font-family: monospace; font-size: 13px; border-radius: 5px; line-height: 1.4; }
 
 /* BOTONES */
-button { cursor: pointer; border-radius: 5px; border: none; font-weight: bold; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+button {
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease, background-color 0.25s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 0;
+}
+button:disabled { animation: none !important; transform: none !important; box-shadow: none !important; filter: none !important; }
+
+/* 1) SORTEAR 1 (VILLA) -> HEAT (FUEGO): brillo pulsante naranja-rojo tipo flama */
 .btn-azul { background-color: #0d6efd; color: white; padding: 12px; width: 100%; font-size: 14px; margin-bottom: 8px; }
-.btn-azul:hover:not(:disabled) { background-color: #0b5ed7; }
+@keyframes fuego-pulse {
+    0%   { box-shadow: 0 0 8px 2px rgba(255,87,34,0.75), 0 0 3px 1px rgba(255,193,7,0.6); }
+    35%  { box-shadow: 0 0 22px 7px rgba(255,111,0,0.9), 0 0 10px 3px rgba(255,235,59,0.7); }
+    65%  { box-shadow: 0 0 14px 4px rgba(220,53,69,0.85), 0 0 6px 2px rgba(255,152,0,0.6); }
+    100% { box-shadow: 0 0 8px 2px rgba(255,87,34,0.75), 0 0 3px 1px rgba(255,193,7,0.6); }
+}
+.btn-azul:hover:not(:disabled) { background-color: #0b5ed7; transform: translateY(-2px) scale(1.02); filter: brightness(1.1); animation: fuego-pulse 0.85s ease-in-out infinite; }
 .btn-azul:disabled { background-color: #a4c5f5; cursor: not-allowed; }
-.btn-gris-oscuro { background-color: #495057; color: white; padding: 8px; font-size: 12px; width: 100%; }
-.btn-verde-gen { background-color: #198754; color: white; padding: 12px; font-size: 13px; width: 100%; margin-top: 10px; }
-.btn-verde-gen:hover { background-color: #157347; }
-.btn-naranja { background-color: #fd7e14; color: white; padding: 8px; font-size: 12px; width: 100%; margin-top: 5px; }
-.btn-naranja:hover { background-color: #e36d0d; }
-.btn-rojo { background-color: #dc3545; color: white; padding: 10px; font-size: 12px; width: 100%; }
-.btn-rojo:hover { background-color: #bb2d3b; }
-.btn-whatsapp { background-color: #20c997; color: white; padding: 14px; font-size: 14px; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-.btn-whatsapp:hover { background-color: #1aa179; }
+
+/* 2) APLICAR CAMBIOS -> LANTERN: parpadeo de luz cálida, como una linterna */
+.btn-gris-oscuro { background-color: #495057; color: white; padding: 8px; font-size: 12px; width: 100%; --heat-c: rgba(255,193,7,0.75); }
+@keyframes lantern-flicker {
+    0%, 100% { box-shadow: 0 0 8px 2px var(--heat-c); filter: brightness(1); }
+    25%      { box-shadow: 0 0 15px 4px var(--heat-c); filter: brightness(1.08); }
+    50%      { box-shadow: 0 0 5px 1px var(--heat-c); filter: brightness(0.96); }
+    75%      { box-shadow: 0 0 18px 5px var(--heat-c); filter: brightness(1.1); }
+}
+.btn-gris-oscuro:hover:not(:disabled) { background-color: #343a40; animation: lantern-flicker 1.3s ease-in-out infinite; }
+
+/* 3) RE-GENERAR TABLA -> GRASS: franjas creciendo desde abajo, como pasto */
+.btn-verde-gen { background-color: #198754; color: white; padding: 12px; font-size: 13px; width: 100%; margin-top: 10px; overflow: hidden; }
+.btn-verde-gen::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 0; z-index: -1;
+    background: repeating-linear-gradient(90deg, #0f5132 0 3px, #157347 3px 6px);
+    transition: height 0.35s ease;
+}
+.btn-verde-gen:hover:not(:disabled) { background-color: #157347; }
+.btn-verde-gen:hover:not(:disabled)::after { height: 100%; }
+
+/* 4) LIMPIAR TABLA -> HEAT: brillo pulsante tipo fuego/calor */
+.btn-naranja { background-color: #fd7e14; color: white; padding: 8px; font-size: 12px; width: 100%; margin-top: 5px; --heat-c: rgba(253,126,20,0.9); }
+@keyframes heat-pulse {
+    0%, 100% { box-shadow: 0 0 6px 1px var(--heat-c); }
+    50%      { box-shadow: 0 0 22px 7px var(--heat-c); }
+}
+.btn-naranja:hover:not(:disabled) { background-color: #e36d0d; transform: translateY(-2px) scale(1.02); filter: brightness(1.15); animation: heat-pulse 0.9s ease-in-out infinite; }
+
+/* 5) RESETEAR SISTEMA -> SCRATCH/FOIL: barrido de brillo, como raspar una capa */
+.btn-rojo {
+    background: linear-gradient(100deg, #dc3545 0%, #dc3545 42%, #ff9a9a 50%, #dc3545 58%, #dc3545 100%);
+    background-size: 260% 100%; background-position: 100% 0;
+    color: white; padding: 10px; font-size: 12px; width: 100%;
+}
+.btn-rojo:hover:not(:disabled) { animation: scratch-sweep 0.9s ease-in-out infinite; }
+@keyframes scratch-sweep {
+    0%   { background-position: 100% 0; }
+    100% { background-position: 0% 0; }
+}
+
+/* 6) DESCARGAR REPORTE -> HELIX: franjas diagonales en movimiento continuo */
+.btn-whatsapp {
+    background-image: repeating-linear-gradient(135deg, #20c997 0 12px, #17a589 12px 24px);
+    background-size: 200% 200%; color: white; padding: 14px; font-size: 14px; width: 100%; margin-top: 15px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn-whatsapp:hover:not(:disabled) { animation: helix-move 0.8s linear infinite; }
+@keyframes helix-move {
+    0%   { background-position: 0 0; }
+    100% { background-position: 48px 0; }
+}
 
 /* ELEMENTOS VISUALES ESPECÍFICOS */
 .visor-animacion { border: 3px solid #0d6efd; background-color: #fff; height: 75px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: #198754; width: 100%; border-radius: 8px; margin-top: 5px; }
